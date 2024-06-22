@@ -2,7 +2,7 @@ from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 from os import getenv
-
+import os
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = getenv('SECRET_KEY')
+SECRET_KEY = 'Bobur'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -24,6 +24,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 DJANGO_DEFAULT_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +41,7 @@ THIRD_APPS = [
 
 MY_APPS = [
     'users',
+    'app_attendance',
 ]
 
 INSTALLED_APPS = DJANGO_DEFAULT_APPS + THIRD_APPS + MY_APPS
@@ -123,14 +125,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
-if DEBUG is False:
-    # STATIC_ROOT = '/home/my_domain/domain_dir/static/'
-    STATIC_ROOT = 'static'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 # Default primary key field type
@@ -202,8 +201,15 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = getenv('EMAIL_HOST_USER')
+EMAIL_HOST_USER = 'fmetube01@gmail.com'
 # https://myaccount.google.com/apppasswords?rapt=AEjHL4PYdZpsTQqErM5VNV1NzBbxaWGWaAuFbG12GJMlrDId-ycKtnRDq5MSuAg_FmxYqa-gs1_wnVbAFPqwO2hfSOSpRPX0JMIYIr8aRewzquXL0x9t3us
-EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = 'epqc qqfs verw hyhb'
 # EMAIL_USE_SSL = True
 
+JAZZMIN_SETTINGS = {
+    "show_ui_builder": True,
+    "theme": 'default',
+    "site_title": "Attendance Admin",
+    "site_header": "Attendance",
+    "welcome_sign": "Welcome to the Attendance Admin Panel",
+}
