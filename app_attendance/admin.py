@@ -72,7 +72,7 @@ class AttendanceInline(admin.TabularInline):
             today = date.today()
             students = group.students.all()
 
-            # Create attendance records for students who don't have one for today
+
             for student in students:
                 if not Attendance.objects.filter(student=student, date=today).exists():
                     Attendance.objects.create(student=student, date=today, group=group)
