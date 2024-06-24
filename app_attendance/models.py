@@ -1,14 +1,28 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.utils import timezone
+
+class Group(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'groups'
+        verbose_name = 'Group'
+        verbose_name_plural = 'Groups'
 
 
-# Create your models here.
-class Students(models.Model):
+class Student(models.Model):
     name = models.CharField(max_length=100)
     surname = models.CharField(max_length=100)
     age = models.IntegerField()
     email = models.EmailField(null=True, blank=True)
     phone = models.CharField(max_length=13)
     address = models.CharField(max_length=100, null=True, blank=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='students')
+    # attendance = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.name} {self.surname}'
@@ -20,14 +34,11 @@ class Students(models.Model):
 
 
 class Attendance(models.Model):
-    student = models.ForeignKey(Students, on_delete=models.CASCADE)
-    date = models.DateField()
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='student')
+    date = models.DateField(default=timezone.now)
     present = models.BooleanField(default=False)
-    time = models.TimeField(null=True, blank=True)
-
-    def clean(self):
-        if not self.present and self.time:
-            raise ValidationError("Time cannot be set if the student is not present.")
+    time = models.TimeField(default=timezone.now, null=True, blank=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='attendances')
 
     def __str__(self):
         return f'{self.student.name} - {self.date}'
@@ -40,10 +51,11 @@ class Attendance(models.Model):
 
 
 class Salary(models.Model):
-    student = models.ForeignKey(Students, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     paid_date = models.DateField()
     is_paid = models.BooleanField(default=False)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='salaries')
 
     def __str__(self):
         return f'{self.student.name} - {self.paid_date}'
