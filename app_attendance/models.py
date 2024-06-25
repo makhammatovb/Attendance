@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from datetime import date
+
 
 class Group(models.Model):
     name = models.CharField(max_length=100)
@@ -35,7 +37,7 @@ class Student(models.Model):
 
 class Attendance(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='student')
-    date = models.DateField(default=timezone.now)
+    date = models.DateField(default=date.today)
     present = models.BooleanField(default=False)
     time = models.TimeField(default=timezone.now, null=True, blank=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='attendances')

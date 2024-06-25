@@ -5,7 +5,7 @@ from .views import GroupViewSet, StudentViewSet, AttendanceViewSet, SalaryViewSe
 router = DefaultRouter()
 router.register(r'groups', GroupViewSet)
 router.register(r'students', StudentViewSet)
-router.register(r'attendances', AttendanceViewSet)
+router.register(r'attendance', AttendanceViewSet)
 router.register(r'salaries', SalaryViewSet)
 
 urlpatterns = [

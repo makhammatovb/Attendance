@@ -68,16 +68,18 @@ class AttendanceInline(admin.TabularInline):
         qs = super().get_queryset(request)
         group_id = request.resolver_match.kwargs.get('object_id')
         if group_id:
-            group = Group.objects.get(id=group_id)
-            today = date.today()
-            students = group.students.all()
+            try:
+                group = Group.objects.get(id=group_id)
+                today = date.today()
+                students = group.students.all()
 
+                for student in students:
+                    if not Attendance.objects.filter(student=student, date=today).exists():
+                        Attendance.objects.create(student=student, date=today, group=group)
 
-            for student in students:
-                if not Attendance.objects.filter(student=student, date=today).exists():
-                    Attendance.objects.create(student=student, date=today, group=group)
-
-            qs = Attendance.objects.filter(student__group_id=group_id, date=today)
+                qs = Attendance.objects.filter(student__group_id=group_id, date=today)
+            except Group.DoesNotExist:
+                qs = Attendance.objects.none()
         return qs
 
     def student_name(self, instance):
@@ -117,7 +119,7 @@ class StudentAdmin(admin.ModelAdmin):
     list_display = ('name', 'surname', 'age', 'email', 'phone', 'group')
     list_filter = ('group',)
     search_fields = ('name', 'surname', 'group__name')
-    inlines = [AttendanceInline, SalaryInline]
+    inlines = [SalaryInline]
     actions = [mark_present]
 
 @admin.register(Attendance)
